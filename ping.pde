@@ -1,9 +1,9 @@
-ArrayList pings;
+ArrayList<Ping> pings;
 
 
 
 void pingsSetup() {
-  pings = new ArrayList();
+  pings = new ArrayList<Ping>();
 }
 
 void pingsDraw() {

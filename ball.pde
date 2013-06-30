@@ -1,10 +1,10 @@
-ArrayList balls;
+ArrayList<Ball> balls;
 PVector g = new PVector(0, 0.1);
 
 
 
 void ballsSetup() {
-  balls = new ArrayList();  
+  balls = new ArrayList<Ball>();  
 }
 
 void ballsDraw() {
@@ -120,7 +120,7 @@ class Ball {
     } else {
       
       for ( int i = 0; i < balls.size(); i++ ) {
-        AudioPlayer ball = balls.get(i);
+        Ball ball = balls.get(i);
         if ( !ball.alive ) { 
           balls.remove(i);
         }

@@ -2,7 +2,7 @@
 //maxim maxim = new maxim(this);
 Maxim maxim = new Maxim(this);
 
-ArrayList notes;
+ArrayList<AudioPlayer> notes;
 
 String[] files = {
   "c3.mp3",
@@ -16,7 +16,7 @@ String[] files = {
 };
 
 void notesSetup() {
-  notes = new ArrayList();
+  notes = new ArrayList<AudioPlayer>();
 }
 
 void notesDraw() {
