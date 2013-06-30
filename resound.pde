@@ -46,13 +46,13 @@ void mouseReleased() {
   mouse_free = true;
   
 }
-ArrayList balls;
+ArrayList<Ball> balls;
 PVector g = new PVector(0, 0.1);
 
 
 
 void ballsSetup() {
-  balls = new ArrayList();  
+  balls = new ArrayList<Ball>();
 }
 
 void ballsDraw() {
@@ -64,17 +64,22 @@ void ballsDraw() {
 }
 
 void ballsMousePressed() {
- for ( int i = 0; i < balls.size(); i++ ) {
+  boolean everything_free = true;
+  for ( int i = 0; i < balls.size(); i++ ) {
     Ball ball = balls.get(i);
     if ( ball.inside( mouseX, mouseY ) ) {
       ball.press();
       mouse_free = false;  //Change global set to held.
     }
+    if ( !ball.free ) {
+      everything_free = false;
+    }
   }
+  if ( everything_free ) mouse_free = everything_free;
 }
 
 void ballsMouseReleased() {
- for ( int i = 0; i < balls.size(); i++ ) {
+  for ( int i = 0; i < balls.size(); i++ ) {
     Ball ball = balls.get(i);
     if ( !ball.free ) {
       ball.release();
@@ -89,7 +94,7 @@ void ballsAdd() {
 
 
 class Ball {
-  
+
   boolean free;
   boolean alive;
 
@@ -102,13 +107,15 @@ class Ball {
   color fillcolor; 
 
   Ball() {
-    
+
     free = true;  // True is freely dynamic, and False is when it's held. 
     alive = true;
 
     radius = 10 + (int)random(20);
 
-    position = new PVector( mouseX, mouseY ); p_position = position.get(); m_position = new PVector( 0, 0 );
+    position = new PVector( mouseX, mouseY ); 
+    p_position = position.get(); 
+    m_position = new PVector( 0, 0 );
     velocity = new PVector( mouseX-pmouseX, mouseY-pmouseY );
     max_speed = 7;
     velocity.limit(max_speed);
@@ -119,15 +126,15 @@ class Ball {
   void tick( ) {
 
     if ( alive ) {
-    
+
       // If free... 
       if ( free ) {
-        
+
         // Affect velocity by gravitational acceletation, and change position by velocity.
         velocity.add(g);
         p_position = position.get();
         position.add(velocity);
-  
+
         // Bounce ball when it hits the walls.
         if ( position.x <= 0+radius ) {
           position.x = 0+radius;
@@ -145,58 +152,54 @@ class Ball {
           position.y = height-radius;
           velocity.y *= -1;
         }
-    
+
         // Ping when it hits the bottom, but only if it isn't stuck there.
         if ( position.y >= height-radius && abs(velocity.y) >= 1 ) {
           notesAdd( position.x );
           pingsAdd( position.x, position.y+radius, (int)map( velocity.mag(), 0, max_speed, 0, 16 ) );
         }
-      
-      // If being held...
-      } else {
-        
+
+        // If being held...
+      } 
+      else {
+
         if ( position.y < 0+radius ) {
           alive = false;
-          mouse_free = true;
         }
-        
+
         // Move with the mouse.
         setPositionToMouse();
-        
       }
-    
-    } else {
-      
+    } 
+    else {
+
       for ( int i = 0; i < balls.size(); i++ ) {
-        AudioPlayer ball = balls.get(i);
+        Ball ball = balls.get(i);
         if ( !ball.alive ) { 
           balls.remove(i);
         }
       }
-      
     }
-    
   }
 
   void draw() {
 
     pushStyle();
-    
+
     // Render the ball itself.
     noStroke();
     fillcolor = color( map( position.x, 0, width, 0, 1 ), 0.8, map( position.y, 0, height, -3, 1 ));
     fill(fillcolor);
     ellipse( position.x, position.y, radius*2, radius*2);
-    
+
     popStyle();
-    
   }
-  
+
   Boolean inside( float _x, float _y ) {
     PVector point = new PVector( _x, _y );
     return position.dist(point) <= radius;
   }
-  
+
   void press() {
     m_position.set( position.x-mouseX, position.y-mouseY );
     free = false;
@@ -208,7 +211,7 @@ class Ball {
     setVelocityToMouse();
     free = true;
   }
-  
+
   void setPositionToMouse() {
     position.set( mouseX+m_position.x, mouseY+m_position.y );
   }
@@ -216,14 +219,13 @@ class Ball {
     velocity.set( mouseX-pmouseX, mouseY-pmouseY );
     velocity.limit(max_speed);
   }
-  
 }
 
 //import ddf.maxim.*;
 //maxim maxim = new maxim(this);
 Maxim maxim = new Maxim(this);
 
-ArrayList notes;
+ArrayList<AudioPlayer> notes;
 
 String[] files = {
   "c3.mp3",
@@ -237,7 +239,7 @@ String[] files = {
 };
 
 void notesSetup() {
-  notes = new ArrayList();
+  notes = new ArrayList<AudioPlayer>();
 }
 
 void notesDraw() {
@@ -261,12 +263,12 @@ void notesAdd( float _x ) {
   notes.add(note);
   
 }
-ArrayList pings;
+ArrayList<Ping> pings;
 
 
 
 void pingsSetup() {
-  pings = new ArrayList();
+  pings = new ArrayList<Ping>();
 }
 
 void pingsDraw() {
